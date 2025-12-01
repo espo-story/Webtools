@@ -1,627 +1,146 @@
-<html lang="en">
+<!DOCTYPE html>
+<html lang="id">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>ESPO STORY CPM TOOLS</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CPM Login Request</title>
     <style>
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
         }
-        pre {
-            white-space: pre-wrap;
+        .container {
+            width: 100%;
+            max-width: 600px;
+            background-color: #252526;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+        h2 { color: #569cd6; text-align: center; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; color: #9cdcfe; }
+        input {
+            width: 100%;
+            padding: 10px;
+            background-color: #3c3c3c;
+            border: 1px solid #555;
+            color: white;
+            border-radius: 4px;
+            box-sizing: border-box; /* Agar padding tidak melebar */
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4ec9b0;
+            color: #1e1e1e;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover { background-color: #3ac9a8; }
+        #responseArea {
+            margin-top: 20px;
+            background-color: #101010;
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid #333;
+            white-space: pre-wrap; /* Agar JSON rapi */
             word-wrap: break-word;
+            font-size: 0.9em;
+            color: #ce9178;
         }
+        .note { font-size: 0.8em; color: #888; margin-top: 5px; }
     </style>
 </head>
-<body class="bg-gray-50 min-h-screen flex flex-col">
-    <header class="bg-blue-700 text-white shadow-md sticky top-0 z-50">
-        <div class="container mx-auto px-4 py-4 flex items-center justify-between">
-            <h1 class="text-xl font-semibold flex items-center space-x-2">
-                <i class="fas fa-car-side text-yellow-400"></i>
-                <span>ESPO STORY CPM TOOLS</span>
-            </h1>
-            <nav class="space-x-4 text-sm hidden md:flex">
-                <a href="#verify" class="hover:underline">Verify Password</a>
-                <a href="#account" class="hover:underline">Account Info</a>
-                <a href="#player-records" class="hover:underline">Player Records</a>
-                <a href="#car-hash" class="hover:underline">Car Hash</a>
-                <a href="#save-car-hash" class="hover:underline">Save Car Hash</a>
-                <a href="#save-player-records" class="hover:underline">Save Player Records</a>
-                <a href="#save-cars" class="hover:underline">Save Cars</a>
-                <a href="#test-get-all-cars" class="hover:underline">Test Get All Cars</a>
-                <a href="#world-sale" class="hover:underline">World Sale</a>
-                <a href="#test-get-one-car" class="hover:underline">Test Get One Car</a>
-                <a href="#signup" class="hover:underline">Sign Up</a>
-            </nav>
-            <button id="menu-btn" class="md:hidden focus:outline-none">
-                <i class="fas fa-bars text-2xl"></i>
-            </button>
-        </div>
-        <nav id="mobile-menu" class="hidden bg-blue-600 text-white px-4 py-2 space-y-2 md:hidden">
-            <a href="#verify" class="block hover:underline">Verify Password</a>
-            <a href="#account" class="block hover:underline">Account Info</a>
-            <a href="#player-records" class="block hover:underline">Player Records</a>
-            <a href="#car-hash" class="block hover:underline">Car Hash</a>
-            <a href="#save-car-hash" class="block hover:underline">Save Car Hash</a>
-            <a href="#save-player-records" class="block hover:underline">Save Player Records</a>
-            <a href="#save-cars" class="block hover:underline">Save Cars</a>
-            <a href="#test-get-all-cars" class="block hover:underline">Test Get All Cars</a>
-            <a href="#world-sale" class="block hover:underline">World Sale</a>
-            <a href="#test-get-one-car" class="block hover:underline">Test Get One Car</a>
-            <a href="#signup" class="block hover:underline">Sign Up</a>
-        </nav>
-    </header>
+<body>
 
-    <main class="container mx-auto px-4 py-8 flex-grow space-y-16">
-        <!-- Verify Password -->
-        <section id="verify" class="mb-12">
-            <h2 class="text-2xl font-semibold mb-4 flex items-center space-x-2">
-                <i class="fas fa-key text-blue-600"></i>
-                <span>Verify Password</span>
-            </h2>
-            <form id="verify-form" class="max-w-md bg-white p-6 rounded shadow-md space-y-4">
-                <div>
-                    <label for="verify-email" class="block text-gray-700 font-medium mb-1">Email</label>
-                    <input type="email" id="verify-email" name="email" required placeholder="user@example.com" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                </div>
-                <div>
-                    <label for="verify-password" class="block text-gray-700 font-medium mb-1">Password</label>
-                    <input type="password" id="verify-password" name="password" required placeholder="Your password" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                </div>
-                <button type="submit" class="w-full bg-blue-600 text-white font-semibold py-2 rounded hover:bg-blue-700 transition">Verify</button>
-            </form>
-            <div id="verify-result" class="mt-4 text-gray-800 whitespace-pre-wrap"></div>
-        </section>
+<div class="container">
+    <h2>CPM Login Tester</h2>
+    
+    <div class="form-group">
+        <label>URL Endpoint:</label>
+        <input type="text" id="url" value="http://192.95.37.8:2340/cpm/login" readonly>
+    </div>
 
-        <!-- Get Account Info -->
-        <section id="account" class="mb-12">
-            <h2 class="text-2xl font-semibold mb-4 flex items-center space-x-2">
-                <i class="fas fa-user-circle text-green-600"></i>
-                <span>Get Account Info</span>
-            </h2>
-            <button id="get-account-info" class="bg-green-600 text-white font-semibold px-6 py-2 rounded hover:bg-green-700 transition">Fetch Account Info</button>
-            <pre id="account-info" class="mt-4 max-w-4xl bg-white p-4 rounded shadow-md overflow-x-auto text-sm text-gray-900"></pre>
-        </section>
+    <div class="form-group">
+        <label>Email:</label>
+        <input type="text" id="email" value="espo@king.lua">
+    </div>
 
-        <!-- Get Player Records -->
-        <section id="player-records" class="mb-12">
-            <h2 class="text-2xl font-semibold mb-4 flex items-center space-x-2">
-                <i class="fas fa-list-alt text-purple-600"></i>
-                <span>Player Records</span>
-            </h2>
-            <button id="get-player-records" class="bg-purple-600 text-white font-semibold px-6 py-2 rounded hover:bg-purple-700 transition">Fetch Player Records</button>
-            <pre id="player-records-data" class="mt-4 max-w-4xl bg-white p-4 rounded shadow-md overflow-x-auto text-sm text-gray-900"></pre>
-        </section>
+    <div class="form-group">
+        <label>Password:</label>
+        <input type="text" id="password" value="111111">
+    </div>
 
-        <!-- Get Car Hash -->
-        <section id="car-hash" class="mb-12">
-            <h2 class="text-2xl font-semibold mb-4 flex items-center space-x-2">
-                <i class="fas fa-car text-red-600"></i>
-                <span>Car Hash</span>
-            </h2>
-            <button id="get-car-hash" class="bg-red-600 text-white font-semibold px-6 py-2 rounded hover:bg-red-700 transition">Fetch Car Hash</button>
-            <pre id="car-hash-data" class="mt-4 max-w-4xl bg-white p-4 rounded shadow-md overflow-x-auto text-sm text-gray-900"></pre>
-        </section>
+    <button onclick="sendRequest()">Kirim Request</button>
 
-        <!-- Save Car Hash -->
-        <section id="save-car-hash" class="mb-12">
-            <h2 class="text-2xl font-semibold mb-4 flex items-center space-x-2">
-                <i class="fas fa-save text-red-700"></i>
-                <span>Save Car Hash</span>
-            </h2>
-            <textarea id="save-car-hash-input" rows="6" placeholder='Paste JSON car hash data here' class="w-full max-w-4xl p-3 border border-gray-300 rounded resize-y"></textarea>
-            <button id="save-car-hash-btn" class="mt-3 bg-red-700 text-white font-semibold px-6 py-2 rounded hover:bg-red-800 transition">Save Car Hash</button>
-            <div id="save-car-hash-result" class="mt-4 text-gray-800 whitespace-pre-wrap"></div>
-        </section>
+    <div id="responseArea">Menunggu request...</div>
+    <div class="note">*Catatan: Pastikan server target mengizinkan CORS (Cross-Origin Resource Sharing).</div>
+</div>
 
-        <!-- Save Player Records -->
-        <section id="save-player-records" class="mb-12">
-            <h2 class="text-2xl font-semibold mb-4 flex items-center space-x-2">
-                <i class="fas fa-save text-purple-700"></i>
-                <span>Save Player Records</span>
-            </h2>
-            <textarea id="save-player-records-input" rows="6" placeholder='Paste JSON player records data here' class="w-full max-w-4xl p-3 border border-gray-300 rounded resize-y"></textarea>
-            <button id="save-player-records-btn" class="mt-3 bg-purple-700 text-white font-semibold px-6 py-2 rounded hover:bg-purple-800 transition">Save Player Records</button>
-            <div id="save-player-records-result" class="mt-4 text-gray-800 whitespace-pre-wrap"></div>
-        </section>
+<script>
+    async function sendRequest() {
+        const url = document.getElementById('url').value;
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const responseArea = document.getElementById('responseArea');
 
-        <!-- Save Cars -->
-        <section id="save-cars" class="mb-12">
-            <h2 class="text-2xl font-semibold mb-4 flex items-center space-x-2">
-                <i class="fas fa-save text-blue-700"></i>
-                <span>Save Cars</span>
-            </h2>
-            <textarea id="save-cars-input" rows="6" placeholder='Paste JSON cars data here' class="w-full max-w-4xl p-3 border border-gray-300 rounded resize-y"></textarea>
-            <button id="save-cars-btn" class="mt-3 bg-blue-700 text-white font-semibold px-6 py-2 rounded hover:bg-blue-800 transition">Save Cars</button>
-            <div id="save-cars-result" class="mt-4 text-gray-800 whitespace-pre-wrap"></div>
-        </section>
-
-        <!-- Test Get All Cars -->
-        <section id="test-get-all-cars" class="mb-12">
-            <h2 class="text-2xl font-semibold mb-4 flex items-center space-x-2">
-                <i class="fas fa-car-side text-indigo-600"></i>
-                <span>Test Get All Cars</span>
-            </h2>
-            <button id="test-get-all-cars-btn" class="bg-indigo-600 text-white font-semibold px-6 py-2 rounded hover:bg-indigo-700 transition">Fetch All Cars</button>
-            <pre id="test-get-all-cars-result" class="mt-4 max-w-4xl bg-white p-4 rounded shadow-md overflow-x-auto text-sm text-gray-900"></pre>
-        </section>
-
-        <!-- World Sale -->
-        <section id="world-sale" class="mb-12">
-            <h2 class="text-2xl font-semibold mb-4 flex items-center space-x-2">
-                <i class="fas fa-globe-americas text-yellow-700"></i>
-                <span>World Sale Car List</span>
-            </h2>
-            <form id="world-sale-form" class="max-w-md bg-white p-6 rounded shadow-md space-y-4">
-                <div>
-                    <label for="ws-value" class="block text-gray-700 font-medium mb-1">World Sale Value (Integer)</label>
-                    <input type="number" id="ws-value" name="wsvalue" required min="0" placeholder="Enter world sale value" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-500" />
-                </div>
-                <button type="submit" class="w-full bg-yellow-600 text-white font-semibold py-2 rounded hover:bg-yellow-700 transition">Get Car List</button>
-            </form>
-            <pre id="world-sale-result" class="mt-4 max-w-4xl bg-white p-4 rounded shadow-md overflow-x-auto text-sm text-gray-900"></pre>
-        </section>
-
-        <!-- Test Get One Car From World Sale -->
-        <section id="test-get-one-car" class="mb-12">
-            <h2 class="text-2xl font-semibold mb-4 flex items-center space-x-2">
-                <i class="fas fa-car-crash text-yellow-800"></i>
-                <span>Test Get One Car From World Sale</span>
-            </h2>
-            <form id="test-get-one-car-form" class="max-w-md bg-white p-6 rounded shadow-md space-y-4">
-                <div>
-                    <label for="owner-account-id" class="block text-gray-700 font-medium mb-1">Owner Account ID</label>
-                    <input type="text" id="owner-account-id" name="ownerAccountID" required placeholder="Owner Account ID" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-700" />
-                </div>
-                <div>
-                    <label for="car-id" class="block text-gray-700 font-medium mb-1">Car ID</label>
-                    <input type="text" id="car-id" name="carid" required placeholder="Car ID" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-700" />
-                </div>
-                <div>
-                    <label for="ws-value-one" class="block text-gray-700 font-medium mb-1">World Sale Value (Integer)</label>
-                    <input type="number" id="ws-value-one" name="wsvalue" required min="0" placeholder="World Sale Value" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-700" />
-                </div>
-                <button type="submit" class="w-full bg-yellow-700 text-white font-semibold py-2 rounded hover:bg-yellow-800 transition">Get One Car</button>
-            </form>
-            <pre id="test-get-one-car-result" class="mt-4 max-w-4xl bg-white p-4 rounded shadow-md overflow-x-auto text-sm text-gray-900"></pre>
-        </section>
-
-        <!-- Sign Up New User -->
-        <section id="signup" class="mb-12">
-            <h2 class="text-2xl font-semibold mb-4 flex items-center space-x-2">
-                <i class="fas fa-user-plus text-indigo-600"></i>
-                <span>Sign Up New User</span>
-            </h2>
-            <form id="signup-form" class="max-w-md bg-white p-6 rounded shadow-md space-y-4">
-                <div>
-                    <label for="signup-email" class="block text-gray-700 font-medium mb-1">Email</label>
-                    <input type="email" id="signup-email" name="email" required placeholder="user@example.com" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-                </div>
-                <div>
-                    <label for="signup-password" class="block text-gray-700 font-medium mb-1">Password</label>
-                    <input type="password" id="signup-password" name="password" required placeholder="Your password" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-                </div>
-                <button type="submit" class="w-full bg-indigo-600 text-white font-semibold py-2 rounded hover:bg-indigo-700 transition">Sign Up</button>
-            </form>
-            <div id="signup-result" class="mt-4 text-gray-800 whitespace-pre-wrap"></div>
-        </section>
-    </main>
-
-    <footer class="bg-gray-800 text-gray-300 py-6 text-center text-sm">
-        &copy; 2024 ESPO STORY CPM TOOLS. All rights reserved.
-    </footer>
-
-    <script>
-        // Toggle mobile menu
-        const menuBtn = document.getElementById('menu-btn');
-        const mobileMenu = document.getElementById('mobile-menu');
-        menuBtn.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
-        });
-
-        // Base data and headers from the provided code
-        const Vdata = {
-            idToken: "eyJhbGciOiJSUzI1NiIsImtpZCI6IjNmNjcyNDYxOTk4YjJiMzMyYWQ4MTY0ZTFiM2JlN2VkYTY4NDZiMzciLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vY3AtbXVsdGlwbGF5ZXIiLCJhdWQiOiJjcC1tdWx0aXBsYXllciIsImF1dGhfdGltZSI6MTY2Njk2NzcxNywidXNlcl9pZCI6InIybnBPekpuaTloWXU1WWZEbWduamZUUVVhSjMiLCJzdWIiOiJyMm5wT3pKbmk5aFl1NVlmRG1nbmpmVFFVYUozIiwiaWF0IjoxNjY2OTY3NzE3LCJleHAiOjE2NjY5NzEzMTcsImVtYWlsIjoidHNiMDEwQGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJlbWFpbCI6WyJ0c2IwMTBAZ21haWwuY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.gztM8gzOpNdW6PmmA_hfJDpxh8hCVC1RgAeKcBeVs5-sZnALK3gOtA85ip8khJyhC0N7i0iPwN9TsJqMGvqPb6qHGtuoe9agXWyPdqiztmKEBsJpJrvjPKJj24PmmoREnDnJq8cZHgX7BPyPoD25ZqhCC1pEkjz_XSoQF4qwLhM7-BR8BjcVYkWxxKxJPzfjMc3WfaW2ehHbYEjx8RcOQvsW6yp1zgGXYlbMavbyjHE2Zbl5ameRwic47WD_C6ugH4vtIf7XJWxbAF02CBHicJqLAkCQt0ioxtQpsYu_yq6khnNOA7vqCIn3G8kfmLIZvTNH9kQ-q7X59ePUwgvrmA",
-            key: "AIzaSyBW1ZbMiUeDZHYUO2bY8Bfnf5rRgrQGPTM",
-            "firebase-instance-id-token": "fdEMFcKoR2iSrZAzViyFkh:APA91bEQsP8kAGfBuPTL_ATg25AmnqpssGTkc7IAS2CgLiILjBbneFuSEzOJr2a97eDvQOPGxlphSIV7gCk2k4Wl0UxMK5x298LrJYa5tJmVRqdyz0j3KDSKLCtCbldkRFwNnjU3lwfP",
-            data: "9FD07A11C3494803B517F92545ED5A6702AD0AD2"
+        // Payload data sesuai Python
+        const payload = {
+            "email": email,
+            "password": password
         };
 
-        function getRandomUserAgent() {
-            const rand = Math.floor(Math.random() * (999999 - 111111 + 1)) + 111111;
-            return `Dalvik/2.1.0 (Linux; U; Android 8.1.0; ASUS_X00TD MIUI/16.2017.2009.087-20${rand})`;
-        }
+        // Header configuration
+        // Catatan: Browser otomatis mengatur Host dan User-Agent.
+        // Kita tidak bisa memaksa mengubah User-Agent di browser standar karena alasan keamanan.
+        const headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+            "X-API-KEY": "cpm_f34afe7563760d904f17ac935dd7771f",
+            "Accept-Language": "id-ID,id;q=0.9,en-US;q=0.8,en;q=0.7"
+        };
 
-        // Common headers for API calls
-        function getHeaders(extraHeaders = {}) {
-            return {
-                "Host": "us-central1-cp-multiplayer.cloudfunctions.net",
-                "authorization": `Bearer ${Vdata.idToken}`,
-                "firebase-instance-id-token": Vdata["firebase-instance-id-token"],
-                "content-type": "application/json; charset=utf-8",
-                "accept-encoding": "gzip",
-                "User-Agent": getRandomUserAgent(),
-                ...extraHeaders
-            };
-        }
+        responseArea.innerHTML = "Mengirim data...";
+        responseArea.style.color = "#dcdcaa";
 
-        // Helper function to handle fetch POST requests with JSON
-        async function postJSON(url, data, headers) {
+        try {
             const response = await fetch(url, {
-                method: "POST",
+                method: 'POST',
                 headers: headers,
-                body: JSON.stringify(data)
+                body: JSON.stringify(payload)
             });
-            return response;
+
+            const result = await response.text();
+            
+            // Coba format JSON jika memungkinkan agar rapi
+            try {
+                const jsonResult = JSON.parse(result);
+                responseArea.innerHTML = JSON.stringify(jsonResult, null, 2);
+            } catch (e) {
+                responseArea.innerHTML = result;
+            }
+
+            responseArea.style.color = response.ok ? "#b5cea8" : "#f44747";
+
+        } catch (error) {
+            console.error('Error:', error);
+            responseArea.style.color = "#f44747";
+            responseArea.innerHTML = "Gagal melakukan request.\n\n" + 
+                "Kemungkinan penyebab:\n" +
+                "1. Server (192.95.37.8) tidak mengizinkan CORS.\n" +
+                "2. Server sedang offline.\n" +
+                "3. Browser memblokir request HTTP (Mixed Content) jika Anda menjalankannya di HTTPS.";
         }
+    }
+</script>
 
-        // Verify Password
-        document.getElementById('verify-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = e.target.email.value.trim();
-            const password = e.target.password.value.trim();
-            const resultEl = document.getElementById('verify-result');
-            resultEl.textContent = "Verifying...";
-            try {
-                const uri = `https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=${Vdata.key}`;
-                const data = { email, password, returnSecureToken: true };
-                const headers = {
-                    "Content-Type": "application/json",
-                    "X-Android-Package": "com.olzhas.carparking.multyplayer",
-                    "X-Android-Cert": "D4962F8124C2E09A66B97C8E326AFF805489FE39",
-                    "Accept-Language": "in-ID, en-US",
-                    "X-Client-Version": "Android/Fallback/X21001000/FirebaseCore-Android",
-                    "X-Firebase-GMPID": "1:581727203278:android:af6b7dee042c8df539459f",
-                    "X-Firebase-Client": "H4sIAAAAAAAAAKtWykhNLCpJSk0sKVayio7VUSpLLSrOzM9TslIyUqoFAFyivEQfAAAA",
-                    "User-Agent": getRandomUserAgent(),
-                    "Host": "www.googleapis.com",
-                    "Connection": "Keep-Alive",
-                    "Accept-Encoding": "gzip"
-                };
-                const response = await fetch(uri, {
-                    method: "POST",
-                    headers: headers,
-                    body: JSON.stringify(data)
-                });
-                if (response.ok) {
-                    const json = await response.json();
-                    Vdata.idToken = json.idToken;
-                    resultEl.textContent = "Password verified successfully. idToken updated.";
-                } else {
-                    const err = await response.json();
-                    resultEl.textContent = `Error: ${err.error.message || response.statusText}`;
-                }
-            } catch (error) {
-                resultEl.textContent = `Error: ${error.message}`;
-            }
-        });
-
-        // Get Account Info
-        document.getElementById('get-account-info').addEventListener('click', async () => {
-            const output = document.getElementById('account-info');
-            output.textContent = "Fetching account info...";
-            try {
-                const uri = `https://www.googleapis.com/identitytoolkit/v3/relyingparty/getAccountInfo?key=${Vdata.key}`;
-                const data = { idToken: Vdata.idToken };
-                const headers = {
-                    "Content-Type": "application/json",
-                    "X-Android-Package": "com.olzhas.carparking.multyplayer",
-                    "X-Android-Cert": "D4962F8124C2E09A66B97C8E326AFF805489FE39",
-                    "Accept-Language": "in-ID, en-US",
-                    "X-Client-Version": "Android/Fallback/X21001000/FirebaseCore-Android",
-                    "X-Firebase-GMPID": "1:581727203278:android:af6b7dee042c8df539459f",
-                    "X-Firebase-Client": "H4sIAAAAAAAAAKtWykhNLCpJSk0sKVayio7VUSpLLSrOzM9TslIyUqoFAFyivEQfAAAA",
-                    "User-Agent": getRandomUserAgent(),
-                    "Host": "www.googleapis.com",
-                    "Connection": "Keep-Alive",
-                    "Accept-Encoding": "gzip"
-                };
-                const response = await fetch(uri, {
-                    method: "POST",
-                    headers: headers,
-                    body: JSON.stringify(data)
-                });
-                if (response.ok) {
-                    const json = await response.json();
-                    output.textContent = JSON.stringify(json, null, 2);
-                } else {
-                    const err = await response.json();
-                    output.textContent = `Error: ${err.error.message || response.statusText}`;
-                }
-            } catch (error) {
-                output.textContent = `Error: ${error.message}`;
-            }
-        });
-
-        // Get Player Records
-        document.getElementById('get-player-records').addEventListener('click', async () => {
-            const output = document.getElementById('player-records-data');
-            output.textContent = "Fetching player records...";
-            try {
-                const uri = `https://us-central1-cp-multiplayer.cloudfunctions.net/GetPlayerRecords2`;
-                const data = { data: Vdata.data };
-                const headers = getHeaders();
-                const response = await fetch(uri, {
-                    method: "POST",
-                    headers: headers,
-                    body: JSON.stringify(data)
-                });
-                if (response.ok) {
-                    const json = await response.json();
-                    const result = JSON.parse(json.result);
-                    output.textContent = JSON.stringify(result, null, 2);
-                } else {
-                    const errText = await response.text();
-                    output.textContent = `Error: ${response.status} - ${errText}`;
-                }
-            } catch (error) {
-                output.textContent = `Error: ${error.message}`;
-            }
-        });
-
-        // Get Car Hash
-        document.getElementById('get-car-hash').addEventListener('click', async () => {
-            const output = document.getElementById('car-hash-data');
-            output.textContent = "Fetching car hash...";
-            try {
-                const uri = `https://us-central1-cp-multiplayer.cloudfunctions.net/GetCarHash`;
-                const data = { data: "" };
-                const headers = getHeaders();
-                const response = await fetch(uri, {
-                    method: "POST",
-                    headers: headers,
-                    body: JSON.stringify(data)
-                });
-                if (response.ok) {
-                    const json = await response.json();
-                    const result = JSON.parse(json.result);
-                    output.textContent = JSON.stringify(result, null, 2);
-                } else {
-                    const errText = await response.text();
-                    output.textContent = `Error: ${response.status} - ${errText}`;
-                }
-            } catch (error) {
-                output.textContent = `Error: ${error.message}`;
-            }
-        });
-
-        // Save Car Hash
-        document.getElementById('save-car-hash-btn').addEventListener('click', async () => {
-            const input = document.getElementById('save-car-hash-input').value.trim();
-            const output = document.getElementById('save-car-hash-result');
-            if (!input) {
-                output.textContent = "Please paste JSON car hash data.";
-                return;
-            }
-            output.textContent = "Saving car hash...";
-            try {
-                const parsedData = JSON.parse(input);
-                const uri = `https://us-central1-cp-multiplayer.cloudfunctions.net/SaveCarHash`;
-                const headers = getHeaders();
-                const data = { data: JSON.stringify(parsedData.result || parsedData) };
-                const response = await fetch(uri, {
-                    method: "POST",
-                    headers: headers,
-                    body: JSON.stringify(data)
-                });
-                if (response.ok) {
-                    const json = await response.json();
-                    const resss = JSON.parse(json.result);
-                    output.textContent = `Save Car Hash Response: ${JSON.stringify(json, null, 2)}`;
-                } else {
-                    const errText = await response.text();
-                    output.textContent = `Error: ${response.status} - ${errText}`;
-                }
-            } catch (error) {
-                output.textContent = `Error parsing JSON or saving: ${error.message}`;
-            }
-        });
-
-        // Save Player Records
-        document.getElementById('save-player-records-btn').addEventListener('click', async () => {
-            const input = document.getElementById('save-player-records-input').value.trim();
-            const output = document.getElementById('save-player-records-result');
-            if (!input) {
-                output.textContent = "Please paste JSON player records data.";
-                return;
-            }
-            output.textContent = "Saving player records...";
-            try {
-                const parsedData = JSON.parse(input);
-                const uri = `https://us-central1-cp-multiplayer.cloudfunctions.net/SavePlayerRecords10`;
-                const headers = getHeaders();
-                const data = { data: JSON.stringify(parsedData.data || parsedData) };
-                const response = await fetch(uri, {
-                    method: "POST",
-                    headers: headers,
-                    body: JSON.stringify(data)
-                });
-                if (response.ok) {
-                    const json = await response.json();
-                    const resss = JSON.parse(json.result);
-                    output.textContent = `Save Player Records Response: ${JSON.stringify(json, null, 2)}`;
-                } else {
-                    const errText = await response.text();
-                    output.textContent = `Error: ${response.status} - ${errText}`;
-                }
-            } catch (error) {
-                output.textContent = `Error parsing JSON or saving: ${error.message}`;
-            }
-        });
-
-        // Save Cars
-        document.getElementById('save-cars-btn').addEventListener('click', async () => {
-            const input = document.getElementById('save-cars-input').value.trim();
-            const output = document.getElementById('save-cars-result');
-            if (!input) {
-                output.textContent = "Please paste JSON cars data.";
-                return;
-            }
-            output.textContent = "Saving cars...";
-            try {
-                const parsedData = JSON.parse(input);
-                const uri = `https://us-central1-cp-multiplayer.cloudfunctions.net/SaveCars`;
-                const headers = getHeaders();
-                const data = { data: JSON.stringify(parsedData.data || parsedData) };
-                const response = await fetch(uri, {
-                    method: "POST",
-                    headers: headers,
-                    body: JSON.stringify(data)
-                });
-                if (response.status === 400) {
-                    const json = await response.json();
-                    const resss = JSON.parse(json.result);
-                    output.textContent = `Save Cars Response (400): ${JSON.stringify(json, null, 2)}`;
-                } else if (response.ok) {
-                    const text = await response.text();
-                    output.textContent = `Unexpected success response: ${text}`;
-                } else {
-                    const errText = await response.text();
-                    output.textContent = `Error: ${response.status} - ${errText}`;
-                }
-            } catch (error) {
-                output.textContent = `Error parsing JSON or saving: ${error.message}`;
-            }
-        });
-
-        // Test Get All Cars
-        document.getElementById('test-get-all-cars-btn').addEventListener('click', async () => {
-            const output = document.getElementById('test-get-all-cars-result');
-            output.textContent = "Fetching all cars...";
-            try {
-                const uri = `https://us-central1-cp-multiplayer.cloudfunctions.net/TestGetAllCars`;
-                const headers = getHeaders();
-                const data = { data: Vdata.data };
-                const response = await fetch(uri, {
-                    method: "POST",
-                    headers: headers,
-                    body: JSON.stringify(data)
-                });
-                if (response.ok) {
-                    const json = await response.json();
-                    const result = JSON.parse(json.result);
-                    output.textContent = JSON.stringify(result, null, 2);
-                } else {
-                    const errText = await response.text();
-                    output.textContent = `Error: ${response.status} - ${errText}`;
-                }
-            } catch (error) {
-                output.textContent = `Error: ${error.message}`;
-            }
-        });
-
-        // World Sale Car List
-        document.getElementById('world-sale-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const output = document.getElementById('world-sale-result');
-            const wsvalue = e.target.wsvalue.value.trim();
-            if (!wsvalue || isNaN(wsvalue)) {
-                output.textContent = "Please enter a valid integer value.";
-                return;
-            }
-            output.textContent = "Fetching world sale car list...";
-            try {
-                const uri = `https://us-central1-cp-multiplayer.cloudfunctions.net/GetCarListWorldSale2`;
-                const data = {
-                    data: {
-                        "@type": "type.googleapis.com/google.protobuf.Int64Value",
-                        value: parseInt(wsvalue, 10)
-                    }
-                };
-                const headers = getHeaders();
-                const response = await fetch(uri, {
-                    method: "POST",
-                    headers: headers,
-                    body: JSON.stringify(data)
-                });
-                if (response.ok) {
-                    const json = await response.json();
-                    output.textContent = JSON.stringify(json.result, null, 2);
-                } else {
-                    const errText = await response.text();
-                    output.textContent = `Error: ${response.status} - ${errText}`;
-                }
-            } catch (error) {
-                output.textContent = `Error: ${error.message}`;
-            }
-        });
-
-        // Test Get One Car From World Sale
-        document.getElementById('test-get-one-car-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const output = document.getElementById('test-get-one-car-result');
-            const ownerAccountID = e.target.ownerAccountID.value.trim();
-            const carid = e.target.carid.value.trim();
-            const wsvalue = e.target.wsvalue.value.trim();
-            if (!ownerAccountID || !carid || !wsvalue || isNaN(wsvalue)) {
-                output.textContent = "Please fill all fields correctly.";
-                return;
-            }
-            output.textContent = "Fetching one car from world sale...";
-            try {
-                const uri = `https://us-central1-cp-multiplayer.cloudfunctions.net/TestGetOneCarFromWorldSale`;
-                const data = { data: [ownerAccountID, carid, wsvalue] };
-                const headers = getHeaders();
-                const response = await fetch(uri, {
-                    method: "POST",
-                    headers: headers,
-                    body: JSON.stringify(data)
-                });
-                if (response.ok) {
-                    const json = await response.json();
-                    output.textContent = JSON.stringify(json.result, null, 2);
-                } else {
-                    const errText = await response.text();
-                    output.textContent = `Error: ${response.status} - ${errText}`;
-                }
-            } catch (error) {
-                output.textContent = `Error: ${error.message}`;
-            }
-        });
-
-        // Signup New User
-        document.getElementById('signup-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = e.target.email.value.trim();
-            const password = e.target.password.value.trim();
-            const resultEl = document.getElementById('signup-result');
-            resultEl.textContent = "Signing up...";
-            try {
-                const uri = `https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=${Vdata.key}`;
-                const data = { email, password };
-                const headers = {
-                    "Content-Type": "application/json",
-                    "X-Android-Package": "com.olzhas.carparking.multyplayer",
-                    "X-Android-Cert": "D4962F8124C2E09A66B97C8E326AFF805489FE39",
-                    "Accept-Language": "in-ID, en-US",
-                    "X-Client-Version": "Android/Fallback/X21001000/FirebaseCore-Android",
-                    "X-Firebase-GMPID": "1:581727203278:android:af6b7dee042c8df539459f",
-                    "X-Firebase-Client": "H4sIAAAAAAAAAKtWykhNLCpJSk0sKVayio7VUSpLLSrOzM9TslIyUqoFAFyivEQfAAAA",
-                    "User-Agent": getRandomUserAgent(),
-                    "Host": "www.googleapis.com",
-                    "Connection": "Keep-Alive",
-                    "Accept-Encoding": "gzip"
-                };
-                const response = await fetch(uri, {
-                    method: "POST",
-                    headers: headers,
-                    body: JSON.stringify(data)
-                });
-                if (response.ok) {
-                    const json = await response.json();
-                    Vdata.idToken = json.idToken;
-                    resultEl.textContent = "User signed up successfully. idToken updated.";
-                } else {
-                    const err = await response.json();
-                    resultEl.textContent = `Error: ${err.error.message || response.statusText}`;
-                }
-            } catch (error) {
-                resultEl.textContent = `Error: ${error.message}`;
-            }
-        });
-    </script>
 </body>
 </html>
